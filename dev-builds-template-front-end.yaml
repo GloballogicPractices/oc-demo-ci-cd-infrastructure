@@ -70,8 +70,8 @@ parameters:
 - description: NPM mirror url. If nexus is deployed locally, use nexus url (e.g. http://nexus.ci:8081/repository/npm/)
   displayName: NPM mirror url
   name: NPM_MIRROR
-  value: http://nexus3.gl-demo-ci-cd.svc:8081/repository/npm/
+  value: http://nexus.gl-oc-demo-ci-cd.svc:8081/repository/npm/
 - description: Bower mirror url. If nexus is deployed locally, use nexus url (e.g. http://nexus.ci:8081/repository/bower-mirror/)
   displayName: Bower mirror url
   name: BOWER_MIRROR
-  value: http://nexus3.gl-demo-ci-cd.svc:8081/repository/bower-mirror/
+  value: http://nexus.gl-oc-demo-ci-cd.svc:8081/repository/bower-mirror/
