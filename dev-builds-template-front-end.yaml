@@ -30,7 +30,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: nexus.gl-oc-demo-ci-cd.svc:8081/repository/dev-front-end:latest
+        name: dev-front-end:latest
     source:
       git:
         ref: ${GIT_REF}
