@@ -1,0 +1,77 @@
+apiVersion: v1
+kind: Template
+labels:
+  demo: microservices-demo
+metadata:
+  annotations:
+    description: Socks Shop demo microservices application buildconfigs template
+    iconClass: icon-nodejs
+    tags: microservice,nodejs
+  name: dev-front-end-build
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: dev-front-end
+    labels:
+      comp-required: "true"
+      app: dev-front-end
+  spec:
+    tags:
+    - name: latest
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    name: dev-front-end
+    labels:
+      comp-required: "true"
+      app: dev-front-end
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: dev-front-end:latest
+    source:
+      git:
+        ref: ${GIT_REF}
+        uri: ${GIT_URI}
+      type: Git
+    strategy:
+      sourceStrategy:
+        env:
+        - name: NPM_MIRROR
+          value: ${NPM_MIRROR}
+        - name: BOWER_MIRROR
+          value: ${BOWER_MIRROR}
+        forcePull: false
+        from:
+          kind: ImageStreamTag
+          name: nodejs:4
+          namespace: openshift
+      type: Source
+    resources:
+      limits:
+        cpu: 500m
+        memory: "2Gi"
+      requests:
+        cpu: "200m"
+        memory: "1Gi"
+parameters:
+- description: Git source URI for application
+  displayName: Git source repository
+  name: GIT_URI
+  required: true
+  value: https://github.com/andriy-gnennyy-gl/oc-demo-ci-cd-front-end
+- description: Git branch/tag reference
+  displayName: Git branch/tag reference
+  name: GIT_REF
+  required: true
+  value: dev
+- description: NPM mirror url. If nexus is deployed locally, use nexus url (e.g. http://nexus.ci:8081/repository/npm/)
+  displayName: NPM mirror url
+  name: NPM_MIRROR
+  value: http://nexus3.gl-demo-ci-cd.svc:8081/repository/npm/
+- description: Bower mirror url. If nexus is deployed locally, use nexus url (e.g. http://nexus.ci:8081/repository/bower-mirror/)
+  displayName: Bower mirror url
+  name: BOWER_MIRROR
+  value: http://nexus3.gl-demo-ci-cd.svc:8081/repository/bower-mirror/
