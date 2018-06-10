@@ -19,13 +19,6 @@ objects:
   spec:
     tags:
     - name: latest
-- kind: Secret
-  apiVersion: v1
-  metadata:
-    name: blsecret
-    creationTimestamp:
-  data:
-    WebHookSecretKey: c2VjcmV1dmFsdWUx
 - apiVersion: v1
   kind: BuildConfig
   metadata:
