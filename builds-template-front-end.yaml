@@ -7,30 +7,30 @@ metadata:
     description: Socks Shop demo microservices application buildconfigs template
     iconClass: icon-nodejs
     tags: microservice,nodejs
-  name: dev-front-end-build
+  name: ${NAME_PREFIX}-front-end-build
 objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    name: dev-front-end
+    name: ${NAME_PREFIX}-front-end
     labels:
       comp-required: "true"
-      app: dev-front-end
+      app: ${NAME_PREFIX}-front-end
   spec:
     tags:
     - name: latest
 - apiVersion: v1
   kind: BuildConfig
   metadata:
-    name: dev-front-end
+    name: ${NAME_PREFIX}-front-end
     labels:
       comp-required: "true"
-      app: dev-front-end
+      app: ${NAME_PREFIX}-front-end
   spec:
     output:
       to:
         kind: ImageStreamTag
-        name: dev-front-end:latest
+        name: ${NAME_PREFIX}-front-end:latest
     source:
       git:
         ref: ${GIT_REF}
@@ -57,6 +57,10 @@ objects:
         cpu: "200m"
         memory: "1Gi"
 parameters:
+- description: Name prefix for all names
+  displayName: Name prefix for all names
+  name: NAME_PREFIX
+  required: true
 - description: Git source URI for application
   displayName: Git source repository
   name: GIT_URI
