@@ -45,8 +45,7 @@ objects:
       type: Git
     triggers:
     - github:
-        secretReference:
-          name: "blsecret"
+        secret: c2VjcmV1dmFsdWUx
       type: GitHub
     strategy:
       sourceStrategy:
