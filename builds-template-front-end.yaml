@@ -19,6 +19,13 @@ objects:
   spec:
     tags:
     - name: latest
+- kind: Secret
+  apiVersion: v1
+  metadata:
+    name: blsecret
+    creationTimestamp:
+  data:
+    WebHookSecretKey: c2VjcmV1dmFsdWUx
 - apiVersion: v1
   kind: BuildConfig
   metadata:
@@ -36,6 +43,11 @@ objects:
         ref: ${GIT_REF}
         uri: ${GIT_URI}
       type: Git
+    triggers:
+    - github:
+        secretReference:
+          name: "blsecret"
+      type: GitHub
     strategy:
       sourceStrategy:
         env:
