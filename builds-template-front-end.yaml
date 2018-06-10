@@ -7,7 +7,7 @@ metadata:
     description: Socks Shop demo microservices application buildconfigs template
     iconClass: icon-nodejs
     tags: microservice,nodejs
-  name: ${NAME_PREFIX}-front-end-build
+  name: front-end-build
 objects:
 - apiVersion: v1
   kind: ImageStream
