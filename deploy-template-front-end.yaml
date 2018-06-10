@@ -7,7 +7,7 @@ metadata:
     description: Socks Shop demo microservices application buildconfigs template
     iconClass: icon-nodejs
     tags: microservice,nodejs
-  name: dev-front-end-deployments
+  name: ${NAME_PREFIX}-front-end-deployments
 objects:
 - apiVersion: v1
   groupNames: null
@@ -19,112 +19,111 @@ objects:
   subjects:
   - kind: ServiceAccount
     name: default
-# UI
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
-    name: dev-front-end
+    name: ${NAME_PREFIX}-front-end
     labels:
-      app: dev-front-end
+      app: ${NAME_PREFIX}-front-end
       comp-required: "true"
   spec:
     replicas: 1
     selector:
-      app: dev-front-end
-      deploymentconfig: dev-front-end
+      app: ${NAME_PREFIX}-front-end
+      deploymentconfig: ${NAME_PREFIX}-front-end
     strategy:
       resources: {}
       type: Recreate
     template:
       metadata:
         labels:
-          app: dev-front-end
-          deploymentconfig: dev-front-end
+          app: ${NAME_PREFIX}-front-end
+          deploymentconfig: ${NAME_PREFIX}-front-end
       spec:
         containers:
         - env:
-          - name: COOLSTORE_GW_ENDPOINT
-            value: http://gw-${HOSTNAME_SUFFIX}
-          - name: HOSTNAME_HTTP
-            value: web-ui:8080
-          image: dev-front-end
+          - name: SESSION_REDIS
+            value: "true"
+          image: ${NAME_PREFIX}-front-end
           imagePullPolicy: Always
-          name: dev-front-end
+          name: ${NAME_PREFIX}-front-end
           ports:
-          - containerPort: 8080
+          - containerPort: 8079
             protocol: TCP
           livenessProbe:
-            failureThreshold: 10
-            exec:
-              command:
-                - curl
-                - '-f'
-                - 'http://localhost:8080'
-            initialDelaySeconds: 60
-            timeoutSeconds: 10
-            periodSeconds: 5
-            successThreshold: 1
+            httpGet:
+              path: /
+              port: 8079
+            initialDelaySeconds: 300
+            periodSeconds: 3
           readinessProbe:
-            failureThreshold: 10
-            exec:
-              command:
-                - curl
-                - '-f'
-                - 'http://localhost:8080'
-            initialDelaySeconds: 60
-            timeoutSeconds: 10
-            periodSeconds: 5
-            successThreshold: 1
+            httpGet:
+              path: /
+              port: 8079
+            initialDelaySeconds: 30
+            periodSeconds: 3
           resources:
             limits:
-              cpu: 500m
-              memory: 1Gi
+              cpu: 300m
+              memory: 1000Mi
             requests:
-              cpu: 50m
-              memory: 128Mi
+              cpu: 100m
+              memory: 300Mi
           terminationMessagePath: /dev/termination-log
         dnsPolicy: ClusterFirst
         restartPolicy: Always
-        securityContext: {}
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          capabilities:
+            drop:
+              - all
+          readOnlyRootFilesystem: true
         terminationGracePeriodSeconds: 30
+      nodeSelector:
+        beta.kubernetes.io/os: linux
     triggers:
     - imageChangeParams:
         automatic: true
         containerNames:
-        - dev-front-end
+        - ${NAME_PREFIX}-front-end
         from:
           kind: ImageStreamTag
-          name: dev-front-end:${APP_VERSION}
+          name: ${NAME_PREFIX}-front-end:${APP_VERSION}
       type: ImageChange
     - type: ConfigChange
 - apiVersion: v1
   kind: Service
   metadata:
     labels:
-      app: dev-front-end
+      app: ${NAME_PREFIX}-front-end
       comp-required: "true"
-    name: dev-front-end
+    name: ${NAME_PREFIX}-front-end
   spec:
     ports:
-    - name: 8080-tcp
-      port: 8080
+    - name: 8079-tcp
+      port: 8079
       protocol: TCP
-      targetPort: 8080
+      targetPort: 8079
     selector:
-      deploymentconfig: dev-front-end
+      deploymentconfig: ${NAME_PREFIX}-front-end
 - apiVersion: v1
   kind: Route
   metadata:
-    name: dev-front-end
+    name: ${NAME_PREFIX}-front-end
     labels:
-      app: dev-front-end
+      app: ${NAME_PREFIX}-front-end
       comp-required: "true"
   spec:
-    host: dev-front-end-${HOSTNAME_SUFFIX}
+    host: ${NAME_PREFIX}-front-end-${HOSTNAME_SUFFIX}
     to:
       kind: Service
-      name: dev-front-end
+      name: ${NAME_PREFIX}-front-end
 parameters:
+- description: Name prefix for all names
+  displayName: Name prefix for all names
+  name: NAME_PREFIX
+  required: true
 - description: Application image version to be deployed (imagestreams should exist)
   displayName: Image version
   name: APP_VERSION
