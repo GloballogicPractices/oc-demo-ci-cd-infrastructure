@@ -42,7 +42,7 @@ oc rollout status dc nexus -n gl-oc-demo-ci-cd
 add_npm_proxy npm admin admin123 "http://nexus-gl-oc-demo-ci-cd.glpractices.com"
 
 # Create Front-End Build(s)
-DEV_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/dev-builds-template-front-end.yaml"
+DEV_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/builds-template-front-end.yaml"
 GIT_URI="https://github.com/andriy-gnennyy-gl/oc-demo-ci-cd-front-end"
 GIT_REF="dev"
 
