@@ -42,11 +42,18 @@ oc rollout status dc nexus -n gl-oc-demo-ci-cd
 add_npm_proxy npm admin admin123 "http://nexus-gl-oc-demo-ci-cd.glpractices.com"
 
 # Create Front-End Build(s)
-DEV_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/builds-template-front-end.yaml"
+BLD_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/builds-template-front-end.yaml"
 GIT_URI="https://github.com/andriy-gnennyy-gl/oc-demo-ci-cd-front-end"
 GIT_REF="dev"
 
-oc process -f $DEV_FT_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=NAME_PREFIX=dev --param=GIT_URI=$GIT_URI --param=GIT_REF=$GIT_REF > temp/dev-front-end.yaml 
+oc process -f $BLD_FT_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=NAME_PREFIX=dev --param=GIT_URI=$GIT_URI --param=GIT_REF=$GIT_REF > temp/dev-front-end.yaml 
+oc create -f temp/dev-front-end.yaml -n gl-oc-demo-ci-cd-dev
+
+# Create Front-End Deployment(s)
+DEP_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-front-end.yaml"
+HOSTNAME_SUFFIX="dev"
+
+oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=NAME_PREFIX=dev --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/dev-front-end.yaml 
 oc create -f temp/dev-front-end.yaml -n gl-oc-demo-ci-cd-dev
 
 read -p "Press enter to continue"
