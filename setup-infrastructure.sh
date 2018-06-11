@@ -135,4 +135,28 @@ oc create -f temp/test-orders-db.yaml -n gl-oc-demo-ci-cd-test
 oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-prod > temp/prod-orders-db.yaml 
 oc create -f temp/prod-orders-db.yaml -n gl-oc-demo-ci-cd-prod
 
+# Create RabbitMQ Deployment(s)
+DEP_MQ_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-rabbitmq.yaml"
+
+oc process -f $DEP_MQ_TEMPLATE -n gl-oc-demo-ci-cd-dev > temp/dev-rabbitmq.yaml 
+oc create -f temp/dev-rabbitmq.yaml -n gl-oc-demo-ci-cd-dev
+
+oc process -f $DEP_MQ_TEMPLATE -n gl-oc-demo-ci-cd-test > temp/test-rabbitmq.yaml 
+oc create -f temp/test-rabbitmq.yaml -n gl-oc-demo-ci-cd-test
+
+oc process -f $DEP_MQ_TEMPLATE -n gl-oc-demo-ci-cd-prod > temp/prod-rabbitmq.yaml 
+oc create -f temp/prod-rabbitmq.yaml -n gl-oc-demo-ci-cd-prod
+
+# Create Session-DB Deployment(s)
+DEP_SDB_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-session-db.yaml"
+
+oc process -f $DEP_SDB_TEMPLATE -n gl-oc-demo-ci-cd-dev > temp/dev-session-db.yaml 
+oc create -f temp/dev-session-db.yaml -n gl-oc-demo-ci-cd-dev
+
+oc process -f $DEP_SDB_TEMPLATE -n gl-oc-demo-ci-cd-test > temp/test-session-db.yaml 
+oc create -f temp/test-session-db.yaml -n gl-oc-demo-ci-cd-test
+
+oc process -f $DEP_SDB_TEMPLATE -n gl-oc-demo-ci-cd-prod > temp/prod-session-db.yaml 
+oc create -f temp/prod-session-db.yaml -n gl-oc-demo-ci-cd-prod
+
 read -p "Press enter to continue"

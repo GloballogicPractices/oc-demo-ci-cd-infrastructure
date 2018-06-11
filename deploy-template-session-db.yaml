@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Template
+labels:
+  demo: microservices-demo
+metadata:
+  annotations:
+    description: Socks Shop demo microservices application buildconfigs template
+    iconClass: icon-redis
+    tags: microservice,redis
+  name: session-db-deployments
+objects:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: session-db
+    labels:
+      app: session-db
+      comp-required: "true"
+  spec:
+    replicas: 1
+    selector:
+      app: session-db
+      deploymentconfig: session-db
+    strategy:
+      resources: {}
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: session-db
+          deploymentconfig: session-db
+        annotations:
+          prometheus.io.scrape: "false"
+      spec:
+        containers:
+        - name: session-db
+          image: redis:alpine
+          ports:
+          - name: redis
+            containerPort: 6379
+          resources:
+            limits:
+              cpu: 300m
+              memory: 1000Mi
+            requests:
+              cpu: 100m
+              memory: 300Mi
+          securityContext:
+            readOnlyRootFilesystem: true
+        nodeSelector:
+          beta.kubernetes.io/os: linux
+    triggers:
+    - type: ConfigChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: session-db
+      comp-required: "true"
+    name: session-db
+  spec:
+    ports:
+    - port: 6379
+      targetPort: 6379
+    selector:
+      deploymentconfig: session-db
