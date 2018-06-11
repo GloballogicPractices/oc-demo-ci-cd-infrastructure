@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Template
+labels:
+  demo: microservices-demo
+  template: front-end-pipeline
+metadata:
+  name: front-end-pipeline
+objects:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      build: front-end
+    name: front-end
+  spec:
+    runPolicy: Serial
+    strategy:
+      jenkinsPipelineStrategy:
+        env:
+          - name: TEST_PROJECT
+            value: ${TEST_PROJECT}
+          - name: PROD_PROJECT
+            value: ${PROD_PROJECT}
+        jenkinsfile: |-
+          def tag,altTag
+          pipeline {
+            agent any
+            stage('Deploy to PROD (Not Live)') {
+                steps {
+                  script {
+                    openshift.withCluster() {
+                      openshift.withProject(env.PROD_PROJECT) {
+                        def route = openshift.selector("route", "front-end").object()
+                        def backends = []
+                        backends.add(route.spec.to)
+                        backends.addAll(route.spec.alternateBackends)
+                        def svc = backends.find {it.weight == 100}
+                        tag = svc.name == "green-front-end" ? "blue" : "green"
+                        altTag = svc.name == "green-front-end" ? "green" : "blue"
+                        openshift.tag("${env.TEST_PROJECT}/test-front-end:latest", "${env.PROD_PROJECT}/front-end:prod-${tag}")
+                        openshift.selector("dc", "${tag}-front-end").rollout().status()
+                      }
+                    }
+                  }
+                }
+              }
+              stage('Approve Go Live') {
+                steps {
+                  timeout(time:15, unit:'MINUTES') {
+                      input message: "Go Live in Production (switch to new version)?", ok: "Go Live"
+                  }
+                }
+              }
+              stage('Go Live') {
+                steps {
+                  script {
+                    openshift.withCluster() {
+                      openshift.withProject(env.PROD_PROJECT) {
+                        openshift.set("route-backends", "front-end", "--adjust", "${tag}-front-end=100%")
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+      type: JenkinsPipeline
+parameters:
+- description: TEST project name containting the buildconfigs
+  displayName: TEST Project Name
+  name: TEST_PROJECT
+  required: true
+  value: gl-oc-demo-ci-cd-test
+- description: PROD project name containting the buildconfigs
+  displayName: PROD Project Name
+  name: PROD_PROJECT
+  required: true
+  value: gl-oc-demo-ci-cd-prod
