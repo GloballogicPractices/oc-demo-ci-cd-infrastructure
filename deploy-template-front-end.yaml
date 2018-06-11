@@ -22,31 +22,31 @@ objects:
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
-    name: ${NAME_PREFIX}-front-end
+    name: front-end
     labels:
-      app: ${NAME_PREFIX}-front-end
+      app: front-end
       comp-required: "true"
   spec:
     replicas: 1
     selector:
-      app: ${NAME_PREFIX}-front-end
-      deploymentconfig: ${NAME_PREFIX}-front-end
+      app: front-end
+      deploymentconfig: front-end
     strategy:
       resources: {}
       type: Recreate
     template:
       metadata:
         labels:
-          app: ${NAME_PREFIX}-front-end
-          deploymentconfig: ${NAME_PREFIX}-front-end
+          app: front-end
+          deploymentconfig: front-end
       spec:
         containers:
         - env:
           - name: SESSION_REDIS
             value: "true"
-          image: ${NAME_PREFIX}-front-end
+          image: front-end
           imagePullPolicy: Always
-          name: ${NAME_PREFIX}-front-end
+          name: front-end
           ports:
           - containerPort: 8079
             protocol: TCP
@@ -85,19 +85,19 @@ objects:
     - imageChangeParams:
         automatic: true
         containerNames:
-        - ${NAME_PREFIX}-front-end
+        - front-end
         from:
           kind: ImageStreamTag
-          name: ${NAME_PREFIX}-front-end:${APP_VERSION}
+          name: front-end:${APP_VERSION}
       type: ImageChange
     - type: ConfigChange
 - apiVersion: v1
   kind: Service
   metadata:
     labels:
-      app: ${NAME_PREFIX}-front-end
+      app: front-end
       comp-required: "true"
-    name: ${NAME_PREFIX}-front-end
+    name: front-end
   spec:
     ports:
     - name: 8079-tcp
@@ -105,24 +105,20 @@ objects:
       protocol: TCP
       targetPort: 8079
     selector:
-      deploymentconfig: ${NAME_PREFIX}-front-end
+      deploymentconfig: front-end
 - apiVersion: v1
   kind: Route
   metadata:
-    name: ${NAME_PREFIX}-front-end
+    name: front-end
     labels:
-      app: ${NAME_PREFIX}-front-end
+      app: front-end
       comp-required: "true"
   spec:
-    host: ${NAME_PREFIX}-front-end-${HOSTNAME_SUFFIX}
+    host: front-end-${HOSTNAME_SUFFIX}
     to:
       kind: Service
-      name: ${NAME_PREFIX}-front-end
+      name: front-end
 parameters:
-- description: Name prefix for all names
-  displayName: Name prefix for all names
-  name: NAME_PREFIX
-  required: true
 - description: Application image version to be deployed (imagestreams should exist)
   displayName: Image version
   name: APP_VERSION

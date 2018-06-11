@@ -68,24 +68,24 @@ BLD_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-
 GIT_URI="https://github.com/andriy-gnennyy-gl/oc-demo-ci-cd-front-end"
 GIT_REF="dev"
 
-oc process -f $BLD_FT_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=NAME_PREFIX=dev --param=GIT_URI=$GIT_URI --param=GIT_REF=$GIT_REF > temp/dev-front-end.yaml 
+oc process -f $BLD_FT_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=GIT_URI=$GIT_URI --param=GIT_REF=$GIT_REF > temp/dev-front-end.yaml 
 oc create -f temp/dev-front-end.yaml -n gl-oc-demo-ci-cd-dev
 
 GIT_REF="master"
 
-oc process -f $BLD_FT_TEMPLATE -n gl-oc-demo-ci-cd-test --param=NAME_PREFIX=test --param=GIT_URI=$GIT_URI --param=GIT_REF=$GIT_REF > temp/test-front-end.yaml 
+oc process -f $BLD_FT_TEMPLATE -n gl-oc-demo-ci-cd-test --param=GIT_URI=$GIT_URI --param=GIT_REF=$GIT_REF > temp/test-front-end.yaml 
 oc create -f temp/test-front-end.yaml -n gl-oc-demo-ci-cd-test
 
 # Create Front-End Deployment(s)
 DEP_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-front-end.yaml"
 HOSTNAME_SUFFIX="gl-oc-demo-ci-cd-dev.glpractices.com"
 
-oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=NAME_PREFIX=dev --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/dev-front-end.yaml 
+oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/dev-front-end.yaml 
 oc create -f temp/dev-front-end.yaml -n gl-oc-demo-ci-cd-dev
 
 HOSTNAME_SUFFIX="gl-oc-demo-ci-cd-test.glpractices.com"
 
-oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-test --param=NAME_PREFIX=test --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/test-front-end.yaml 
+oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-test --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/test-front-end.yaml 
 oc create -f temp/test-front-end.yaml -n gl-oc-demo-ci-cd-test
 
 DEP_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/bluegreen-template-front-end.yaml"
@@ -102,25 +102,37 @@ oc create -f temp/prod-front-end.yaml -n gl-oc-demo-ci-cd
 # Create Carts-DB Deployment(s)
 DEP_CDB_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-carts-db.yaml"
 
-oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=NAME_PREFIX=dev > temp/dev-carts-db.yaml 
+oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-dev > temp/dev-carts-db.yaml 
 oc create -f temp/dev-carts-db.yaml -n gl-oc-demo-ci-cd-dev
 
-oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-test --param=NAME_PREFIX=test > temp/test-carts-db.yaml 
+oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-test > temp/test-carts-db.yaml 
 oc create -f temp/test-carts-db.yaml -n gl-oc-demo-ci-cd-test
 
-oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-prod --param=NAME_PREFIX=prod > temp/prod-carts-db.yaml 
+oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-prod > temp/prod-carts-db.yaml 
 oc create -f temp/prod-carts-db.yaml -n gl-oc-demo-ci-cd-prod
 
 # Create Catalogue-DB Deployment(s)
 DEP_CDB_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-catalogue-db.yaml"
 
-oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=NAME_PREFIX=dev > temp/dev-catalogue-db.yaml 
+oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-dev > temp/dev-catalogue-db.yaml 
 oc create -f temp/dev-catalogue-db.yaml -n gl-oc-demo-ci-cd-dev
 
-oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-test --param=NAME_PREFIX=test > temp/test-catalogue-db.yaml 
+oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-test > temp/test-catalogue-db.yaml 
 oc create -f temp/test-catalogue-db.yaml -n gl-oc-demo-ci-cd-test
 
-oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-prod --param=NAME_PREFIX=prod > temp/prod-catalogue-db.yaml 
+oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-prod > temp/prod-catalogue-db.yaml 
 oc create -f temp/prod-catalogue-db.yaml -n gl-oc-demo-ci-cd-prod
+
+# Create Orders-DB Deployment(s)
+DEP_CDB_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-orders-db.yaml"
+
+oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-dev > temp/dev-orders-db.yaml 
+oc create -f temp/dev-orders-db.yaml -n gl-oc-demo-ci-cd-dev
+
+oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-test > temp/test-orders-db.yaml 
+oc create -f temp/test-orders-db.yaml -n gl-oc-demo-ci-cd-test
+
+oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-prod > temp/prod-orders-db.yaml 
+oc create -f temp/prod-orders-db.yaml -n gl-oc-demo-ci-cd-prod
 
 read -p "Press enter to continue"

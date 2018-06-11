@@ -7,31 +7,31 @@ metadata:
     description: Socks Shop demo microservices application buildconfigs template
     iconClass: icon-mongodb
     tags: microservice,mongodb
-  name: carts-db-deployments
+  name: orders-db-deployments
 objects:
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
-    name: carts-db
+    name: orders-db
     labels:
-      app: carts-db
+      app: orders-db
       comp-required: "true"
   spec:
     replicas: 1
     selector:
-      app: carts-db
-      deploymentconfig: carts-db
+      app: orders-db
+      deploymentconfig: orders-db
     strategy:
       resources: {}
       type: Recreate
     template:
       metadata:
         labels:
-          app: carts-db
-          deploymentconfig: carts-db
+          app: orders-db
+          deploymentconfig: orders-db
       spec:
         containers:
-        - name: carts-db
+        - name: orders-db
           image: mongo
           ports:
           - name: mongo
@@ -60,9 +60,9 @@ objects:
   kind: Service
   metadata:
     labels:
-      app: carts-db
+      app: orders-db
       comp-required: "true"
-    name: carts-db
+    name: orders-db
   spec:
     ports:
     - name: 27017-tcp
@@ -70,4 +70,4 @@ objects:
       protocol: TCP
       targetPort: 27017
     selector:
-      deploymentconfig: carts-db
+      deploymentconfig: orders-db

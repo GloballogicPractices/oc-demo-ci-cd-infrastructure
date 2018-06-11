@@ -12,23 +12,23 @@ objects:
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
-    name: ${NAME_PREFIX}-catalogue-db
+    name: catalogue-db
     labels:
-      app: ${NAME_PREFIX}-catalogue-db
+      app: catalogue-db
       comp-required: "true"
   spec:
     replicas: 1
     selector:
-      app: ${NAME_PREFIX}-catalogue-db
-      deploymentconfig: ${NAME_PREFIX}-catalogue-db
+      app: catalogue-db
+      deploymentconfig: catalogue-db
     strategy:
       resources: {}
       type: Recreate
     template:
       metadata:
         labels:
-          app: ${NAME_PREFIX}-catalogue-db
-          deploymentconfig: ${NAME_PREFIX}-catalogue-db
+          app: catalogue-db
+          deploymentconfig: catalogue-db
       spec:
         containers:
         - name: catalogues-db
@@ -56,9 +56,9 @@ objects:
   kind: Service
   metadata:
     labels:
-      app: ${NAME_PREFIX}-catalogue-db
+      app: catalogue-db
       comp-required: "true"
-    name: ${NAME_PREFIX}-catalogue-db
+    name: catalogue-db
   spec:
     ports:
     - name: 3306-tcp
@@ -66,9 +66,4 @@ objects:
       protocol: TCP
       targetPort: 3306
     selector:
-      deploymentconfig: ${NAME_PREFIX}-catalogue-db
-parameters:
-- description: Name prefix for all names
-  displayName: Name prefix for all names
-  name: NAME_PREFIX
-  required: true
+      deploymentconfig: catalogue-db

@@ -12,25 +12,25 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    name: ${NAME_PREFIX}-front-end
+    name: front-end
     labels:
       comp-required: "true"
-      app: ${NAME_PREFIX}-front-end
+      app: front-end
   spec:
     tags:
     - name: latest
 - apiVersion: v1
   kind: BuildConfig
   metadata:
-    name: ${NAME_PREFIX}-front-end
+    name: front-end
     labels:
       comp-required: "true"
-      app: ${NAME_PREFIX}-front-end
+      app: front-end
   spec:
     output:
       to:
         kind: ImageStreamTag
-        name: ${NAME_PREFIX}-front-end:latest
+        name: front-end:latest
     source:
       git:
         ref: ${GIT_REF}
@@ -61,10 +61,6 @@ objects:
         cpu: "200m"
         memory: "1Gi"
 parameters:
-- description: Name prefix for all names
-  displayName: Name prefix for all names
-  name: NAME_PREFIX
-  required: true
 - description: Git source URI for application
   displayName: Git source repository
   name: GIT_URI
