@@ -63,7 +63,6 @@ objects:
                 }
               }
             }
-          }
       type: JenkinsPipeline
 parameters:
 - description: TEST project name containting the buildconfigs

@@ -22,6 +22,11 @@ oc new-project gl-oc-demo-ci-cd-dev --display-name="GL OC Demo CI\CD Dev"
 oc new-project gl-oc-demo-ci-cd-test --display-name="GL OC Demo CI\CD Test"
 oc new-project gl-oc-demo-ci-cd-prod --display-name="GL OC Demo CI\CD Prod"
 
+oc adm policy add-scc-to-user anyuid -z default -n gl-oc-demo-ci-cd-dev
+oc adm policy add-scc-to-user anyuid -z default -n gl-oc-demo-ci-cd-test
+oc adm policy add-scc-to-user anyuid -z default -n gl-oc-demo-ci-cd-prod
+
+
 oc adm policy add-role-to-group admin system:serviceaccounts:gl-oc-demo-ci-cd -n gl-oc-demo-ci-cd
 
 oc adm policy add-role-to-group admin system:serviceaccounts:gl-oc-demo-ci-cd -n gl-oc-demo-ci-cd-dev
@@ -84,5 +89,10 @@ HOSTNAME_SUFFIX="gl-oc-demo-ci-cd-prod.glpractices.com"
 
 oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-prod --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/prod-front-end.yaml 
 oc create -f temp/prod-front-end.yaml -n gl-oc-demo-ci-cd-prod
+
+DEP_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/pipeline-template-front-end.yaml"
+
+oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd > temp/prod-front-end.yaml 
+oc create -f temp/prod-front-end.yaml -n gl-oc-demo-ci-cd
 
 read -p "Press enter to continue"
