@@ -222,6 +222,18 @@ objects:
       kind: Service
       name: blue-front-end
       weight: "100"
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: blue-front-end
+    labels:
+      app: front-end
+      comp-required: "true"
+  spec:
+    host: blue-front-end-${HOSTNAME_SUFFIX}
+    to:
+      kind: Service
+      name: blue-front-end
 parameters:
 - description: CoolStore application image version to be deployed (imagestreams should exist)
   displayName: CoolStore blue (existing) image version

@@ -25,7 +25,8 @@ objects:
           def tag,altTag
           pipeline {
             agent any
-            stage('Deploy to PROD (Not Live)') {
+            stages {
+              stage('Deploy to PROD (Not Live)') {
                 steps {
                   script {
                     openshift.withCluster() {
@@ -63,6 +64,7 @@ objects:
                 }
               }
             }
+          }
       type: JenkinsPipeline
 parameters:
 - description: TEST project name containting the buildconfigs
