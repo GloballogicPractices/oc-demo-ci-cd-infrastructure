@@ -54,11 +54,6 @@ objects:
               cpu: 100m
               memory: 300Mi
           securityContext:
-            capabilities:
-              drop:
-                - all
-              add:
-                - all
             readOnlyRootFilesystem: true
           volumeMounts:
           - mountPath: /tmp
