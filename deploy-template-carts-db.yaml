@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: Template
+labels:
+  demo: microservices-demo
+metadata:
+  annotations:
+    description: Socks Shop demo microservices application buildconfigs template
+    iconClass: icon-mongodb
+    tags: microservice,mongodb
+  name: cart-db-deployments
+objects:
+- apiVersion: v1
+  groupNames: null
+  kind: RoleBinding
+  metadata:
+    name: default_edit
+  roleRef:
+    name: view
+  subjects:
+  - kind: ServiceAccount
+    name: default
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: ${NAME_PREFIX}-cart-db
+    labels:
+      app: ${NAME_PREFIX}-cart-db
+      comp-required: "true"
+  spec:
+    replicas: 1
+    selector:
+      app: ${NAME_PREFIX}-cart-db
+      deploymentconfig: ${NAME_PREFIX}-cart-db
+    strategy:
+      resources: {}
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: ${NAME_PREFIX}-cart-db
+          deploymentconfig: ${NAME_PREFIX}-cart-db
+      spec:
+        containers:
+        - name: carts-db
+          image: mongo
+          ports:
+          - name: mongo
+            containerPort: 27017
+          securityContext:
+            capabilities:
+              drop:
+                - all
+              add:
+                - CHOWN
+                - SETGID
+                - SETUID
+            readOnlyRootFilesystem: true
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp-volume
+        volumes:
+          - name: tmp-volume
+            emptyDir:
+              medium: Memory
+        nodeSelector:
+          beta.kubernetes.io/os: linux
+    triggers:
+    - type: ConfigChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: ${NAME_PREFIX}-cart-db
+      comp-required: "true"
+    name: ${NAME_PREFIX}-cart-db
+  spec:
+    ports:
+    - name: 27017-tcp
+      port: 27017
+      protocol: TCP
+      targetPort: 27017
+    selector:
+      deploymentconfig: ${NAME_PREFIX}-cart-db
+parameters:
+- description: Name prefix for all names
+  displayName: Name prefix for all names
+  name: NAME_PREFIX
+  required: true

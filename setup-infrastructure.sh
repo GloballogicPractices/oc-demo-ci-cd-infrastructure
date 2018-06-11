@@ -95,4 +95,16 @@ DEP_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-
 oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd > temp/prod-front-end.yaml 
 oc create -f temp/prod-front-end.yaml -n gl-oc-demo-ci-cd
 
+# Create Carts-DB Deployment(s)
+DEP_CDB_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-carts-db.yaml"
+
+oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=NAME_PREFIX=dev > temp/dev-carts-db.yaml 
+oc create -f temp/dev-carts-db.yaml -n gl-oc-demo-ci-cd-dev
+
+oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-test --param=NAME_PREFIX=test > temp/test-carts-db.yaml 
+oc create -f temp/test-carts-db.yaml -n gl-oc-demo-ci-cd-test
+
+oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-prod --param=NAME_PREFIX=prod > temp/prod-carts-db.yaml 
+oc create -f temp/prod-carts-db.yaml -n gl-oc-demo-ci-cd-prod
+
 read -p "Press enter to continue"
