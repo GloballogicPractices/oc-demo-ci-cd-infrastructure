@@ -19,13 +19,21 @@ EOM
 
 oc new-project gl-oc-demo-ci-cd --display-name="GL OC Demo CI\CD Infra"
 oc new-project gl-oc-demo-ci-cd-dev --display-name="GL OC Demo CI\CD Dev"
+oc new-project gl-oc-demo-ci-cd-test --display-name="GL OC Demo CI\CD Test"
+oc new-project gl-oc-demo-ci-cd-prod --display-name="GL OC Demo CI\CD Prod"
 
 oc adm policy add-role-to-group admin system:serviceaccounts:gl-oc-demo-ci-cd -n gl-oc-demo-ci-cd
 
 oc adm policy add-role-to-group admin system:serviceaccounts:gl-oc-demo-ci-cd -n gl-oc-demo-ci-cd-dev
 oc adm policy add-role-to-group admin system:serviceaccounts:gl-oc-demo-ci-cd-dev -n gl-oc-demo-ci-cd-dev
 
-oc adm pod-network join-projects --to=gl-oc-demo-ci-cd gl-oc-demo-ci-cd-dev
+oc adm policy add-role-to-group admin system:serviceaccounts:gl-oc-demo-ci-cd -n gl-oc-demo-ci-cd-test
+oc adm policy add-role-to-group admin system:serviceaccounts:gl-oc-demo-ci-cd-test -n gl-oc-demo-ci-cd-test
+
+oc adm policy add-role-to-group admin system:serviceaccounts:gl-oc-demo-ci-cd -n gl-oc-demo-ci-cd-prod
+oc adm policy add-role-to-group admin system:serviceaccounts:gl-oc-demo-ci-cd-prod -n gl-oc-demo-ci-cd-prod
+
+oc adm pod-network join-projects --to=gl-oc-demo-ci-cd gl-oc-demo-ci-cd-dev gl-oc-demo-ci-cd-test gl-oc-demo-ci-cd-prod
 
 mkdir temp
 
@@ -49,11 +57,21 @@ GIT_REF="dev"
 oc process -f $BLD_FT_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=NAME_PREFIX=dev --param=GIT_URI=$GIT_URI --param=GIT_REF=$GIT_REF > temp/dev-front-end.yaml 
 oc create -f temp/dev-front-end.yaml -n gl-oc-demo-ci-cd-dev
 
+GIT_REF="master"
+
+oc process -f $BLD_FT_TEMPLATE -n gl-oc-demo-ci-cd-test --param=NAME_PREFIX=test --param=GIT_URI=$GIT_URI --param=GIT_REF=$GIT_REF > temp/test-front-end.yaml 
+oc create -f temp/test-front-end.yaml -n gl-oc-demo-ci-cd-test
+
 # Create Front-End Deployment(s)
 DEP_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-front-end.yaml"
 HOSTNAME_SUFFIX="gl-oc-demo-ci-cd-dev.glpractices.com"
 
 oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=NAME_PREFIX=dev --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/dev-front-end.yaml 
 oc create -f temp/dev-front-end.yaml -n gl-oc-demo-ci-cd-dev
+
+HOSTNAME_SUFFIX="gl-oc-demo-ci-cd-test.glpractices.com"
+
+oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-test --param=NAME_PREFIX=test --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/test-front-end.yaml 
+oc create -f temp/test-front-end.yaml -n gl-oc-demo-ci-cd-test
 
 read -p "Press enter to continue"
