@@ -1,0 +1,239 @@
+apiVersion: v1
+kind: Template
+labels:
+  demo: microservices-demo
+metadata:
+  annotations:
+    description: Socks Shop demo microservices application buildconfigs template
+    iconClass: icon-nodejs
+    tags: microservice,nodejs
+  name: front-end-deployments
+objects:
+- apiVersion: v1
+  groupNames: null
+  kind: RoleBinding
+  metadata:
+    name: default_edit
+  roleRef:
+    name: view
+  subjects:
+  - kind: ServiceAccount
+    name: default
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: front-end
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: blue-front-end
+    labels:
+      app: front-end
+      variant: blue
+      comp-required: "true"
+  spec:
+    replicas: 1
+    selector:
+      app: front-end
+      deploymentconfig: blue-front-end
+    strategy:
+      resources: {}
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: front-end
+          variant: blue
+          deploymentconfig: blue-front-end
+        name: blue-front-end
+      spec:
+        containers:
+        - env:
+          - name: SESSION_REDIS
+            value: "true"
+          image: ' '
+          imagePullPolicy: Always
+          name: front-end
+          ports:
+          - containerPort: 8079
+            protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8079
+            initialDelaySeconds: 300
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8079
+            initialDelaySeconds: 30
+            periodSeconds: 3
+          resources:
+            limits:
+              cpu: 300m
+              memory: 1000Mi
+            requests:
+              cpu: 100m
+              memory: 300Mi
+          terminationMessagePath: /dev/termination-log
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        securityContext:
+          runAsNonRoot: true
+          capabilities:
+            drop:
+              - all
+          readOnlyRootFilesystem: true
+        terminationGracePeriodSeconds: 30
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - front-end
+        from:
+          kind: ImageStreamTag
+          name: front-end:${APP_VERSION_BLUE}
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: front-end
+      variant: blue
+      comp-required: "true"
+    name: blue-front-end
+  spec:
+    ports:
+    - name: 8079-tcp
+      port: 8079
+      protocol: TCP
+      targetPort: 8079
+    selector:
+      deploymentconfig: blue-front-end
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: green-front-end
+    labels:
+      app: front-end
+      variant: green
+      comp-required: "true"
+  spec:
+    replicas: 1
+    selector:
+      app: front-end
+      deploymentconfig: green-front-end
+    strategy:
+      resources: {}
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: front-end
+          variant: green
+          deploymentconfig: green-front-end
+        name: green-front-end
+      spec:
+        containers:
+        - env:
+          - name: SESSION_REDIS
+            value: "true"
+          image: ' '
+          imagePullPolicy: Always
+          name: front-end
+          ports:
+          - containerPort: 8079
+            protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8079
+            initialDelaySeconds: 300
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8079
+            initialDelaySeconds: 30
+            periodSeconds: 3
+          resources:
+            limits:
+              cpu: 300m
+              memory: 1000Mi
+            requests:
+              cpu: 100m
+              memory: 300Mi
+          terminationMessagePath: /dev/termination-log
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        securityContext:
+          runAsNonRoot: true
+          capabilities:
+            drop:
+              - all
+          readOnlyRootFilesystem: true
+        terminationGracePeriodSeconds: 30
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - front-end
+        from:
+          kind: ImageStreamTag
+          name: front-end:${APP_VERSION_GREEN}
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: front-end
+      variant: green
+      comp-required: "true"
+    name: green-front-end
+  spec:
+    ports:
+    - name: 8079-tcp
+      port: 8079
+      protocol: TCP
+      targetPort: 8079
+    selector:
+      deploymentconfig: green-front-end
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: front-end
+    labels:
+      app: front-end
+      variant: green
+      comp-required: "true"
+  spec:
+    host: front-end-${HOSTNAME_SUFFIX}
+    alternateBackends:
+    - name: green-front-end
+      weight: "0"
+    to:
+      kind: Service
+      name: blue-front-end
+      weight: "100"
+parameters:
+- description: CoolStore application image version to be deployed (imagestreams should exist)
+  displayName: CoolStore blue (existing) image version
+  name: APP_VERSION_BLUE
+  required: true
+  value: prod-blue
+- description: CoolStore application image version to be deployed (imagestreams should exist)
+  displayName: CoolStore green (new) image version
+  name: APP_VERSION_GREEN
+  required: true
+  value: prod-green
+- description: Hostname suffix used for routes
+  displayName: Hostname suffix used for routes
+  name: HOSTNAME_SUFFIX
+  required: true
