@@ -70,4 +70,5 @@ objects:
       protocol: TCP
       targetPort: 27017
     selector:
+      name: carts-db
       deploymentconfig: carts-db

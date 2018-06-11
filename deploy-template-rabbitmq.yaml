@@ -75,4 +75,5 @@ objects:
       targetPort: exporter
       protocol: TCP
     selector:
+      name: rabbitmq
       deploymentconfig: rabbitmq

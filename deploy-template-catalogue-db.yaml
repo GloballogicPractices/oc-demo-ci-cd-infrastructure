@@ -66,4 +66,5 @@ objects:
       protocol: TCP
       targetPort: 3306
     selector:
+      name: catalogue-db
       deploymentconfig: catalogue-db

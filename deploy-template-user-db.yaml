@@ -7,32 +7,32 @@ metadata:
     description: Socks Shop demo microservices application buildconfigs template
     iconClass: icon-mongodb
     tags: microservice,mongodb
-  name: orders-db-deployments
+  name: user-db-deployments
 objects:
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
-    name: orders-db
+    name: user-db
     labels:
-      app: orders-db
+      app: user-db
       comp-required: "true"
   spec:
     replicas: 1
     selector:
-      app: orders-db
-      deploymentconfig: orders-db
+      app: user-db
+      deploymentconfig: user-db
     strategy:
       resources: {}
       type: Recreate
     template:
       metadata:
         labels:
-          app: orders-db
-          deploymentconfig: orders-db
+          app: user-db
+          deploymentconfig: user-db
       spec:
         containers:
-        - name: orders-db
-          image: mongo
+        - name: user-db
+          image: weaveworksdemos/user-db:0.3.0
           ports:
           - name: mongo
             containerPort: 27017
@@ -60,9 +60,9 @@ objects:
   kind: Service
   metadata:
     labels:
-      app: orders-db
+      app: user-db
       comp-required: "true"
-    name: orders-db
+    name: user-db
   spec:
     ports:
     - name: 27017-tcp
@@ -70,5 +70,5 @@ objects:
       protocol: TCP
       targetPort: 27017
     selector:
-      name: orders-db
-      deploymentconfig: orders-db
+      name: user-db
+      deploymentconfig: user-db

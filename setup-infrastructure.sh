@@ -63,42 +63,6 @@ oc rollout status dc jenkins -n gl-oc-demo-ci-cd
 oc delete route jenkins -n gl-oc-demo-ci-cd
 oc expose service jenkins -n gl-oc-demo-ci-cd
 
-# Create Front-End Build(s)
-BLD_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/builds-template-front-end.yaml"
-GIT_URI="https://github.com/andriy-gnennyy-gl/oc-demo-ci-cd-front-end"
-GIT_REF="dev"
-
-oc process -f $BLD_FT_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=GIT_URI=$GIT_URI --param=GIT_REF=$GIT_REF > temp/dev-front-end.yaml 
-oc create -f temp/dev-front-end.yaml -n gl-oc-demo-ci-cd-dev
-
-GIT_REF="master"
-
-oc process -f $BLD_FT_TEMPLATE -n gl-oc-demo-ci-cd-test --param=GIT_URI=$GIT_URI --param=GIT_REF=$GIT_REF > temp/test-front-end.yaml 
-oc create -f temp/test-front-end.yaml -n gl-oc-demo-ci-cd-test
-
-# Create Front-End Deployment(s)
-DEP_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-front-end.yaml"
-HOSTNAME_SUFFIX="gl-oc-demo-ci-cd-dev.glpractices.com"
-
-oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/dev-front-end.yaml 
-oc create -f temp/dev-front-end.yaml -n gl-oc-demo-ci-cd-dev
-
-HOSTNAME_SUFFIX="gl-oc-demo-ci-cd-test.glpractices.com"
-
-oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-test --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/test-front-end.yaml 
-oc create -f temp/test-front-end.yaml -n gl-oc-demo-ci-cd-test
-
-DEP_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/bluegreen-template-front-end.yaml"
-HOSTNAME_SUFFIX="gl-oc-demo-ci-cd-prod.glpractices.com"
-
-oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-prod --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/prod-front-end.yaml 
-oc create -f temp/prod-front-end.yaml -n gl-oc-demo-ci-cd-prod
-
-DEP_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/pipeline-template-front-end.yaml"
-
-oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd > temp/prod-front-end.yaml 
-oc create -f temp/prod-front-end.yaml -n gl-oc-demo-ci-cd
-
 # Create Carts-DB Deployment(s)
 DEP_CDB_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-carts-db.yaml"
 
@@ -158,5 +122,53 @@ oc create -f temp/test-session-db.yaml -n gl-oc-demo-ci-cd-test
 
 oc process -f $DEP_SDB_TEMPLATE -n gl-oc-demo-ci-cd-prod > temp/prod-session-db.yaml 
 oc create -f temp/prod-session-db.yaml -n gl-oc-demo-ci-cd-prod
+
+# Create User-DB Deployment(s)
+DEP_SDB_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-user-db.yaml"
+
+oc process -f $DEP_SDB_TEMPLATE -n gl-oc-demo-ci-cd-dev > temp/dev-user-db.yaml 
+oc create -f temp/dev-user-db.yaml -n gl-oc-demo-ci-cd-dev
+
+oc process -f $DEP_SDB_TEMPLATE -n gl-oc-demo-ci-cd-test > temp/test-user-db.yaml 
+oc create -f temp/test-user-db.yaml -n gl-oc-demo-ci-cd-test
+
+oc process -f $DEP_SDB_TEMPLATE -n gl-oc-demo-ci-cd-prod > temp/prod-user-db.yaml 
+oc create -f temp/prod-user-db.yaml -n gl-oc-demo-ci-cd-prod
+
+# Create Front-End Build(s)
+BLD_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/builds-template-front-end.yaml"
+GIT_URI="https://github.com/andriy-gnennyy-gl/oc-demo-ci-cd-front-end"
+GIT_REF="dev"
+
+oc process -f $BLD_FT_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=GIT_URI=$GIT_URI --param=GIT_REF=$GIT_REF > temp/dev-front-end.yaml 
+oc create -f temp/dev-front-end.yaml -n gl-oc-demo-ci-cd-dev
+
+GIT_REF="master"
+
+oc process -f $BLD_FT_TEMPLATE -n gl-oc-demo-ci-cd-test --param=GIT_URI=$GIT_URI --param=GIT_REF=$GIT_REF > temp/test-front-end.yaml 
+oc create -f temp/test-front-end.yaml -n gl-oc-demo-ci-cd-test
+
+# Create Front-End Deployment(s)
+DEP_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-front-end.yaml"
+HOSTNAME_SUFFIX="gl-oc-demo-ci-cd-dev.glpractices.com"
+
+oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/dev-front-end.yaml 
+oc create -f temp/dev-front-end.yaml -n gl-oc-demo-ci-cd-dev
+
+HOSTNAME_SUFFIX="gl-oc-demo-ci-cd-test.glpractices.com"
+
+oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-test --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/test-front-end.yaml 
+oc create -f temp/test-front-end.yaml -n gl-oc-demo-ci-cd-test
+
+DEP_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/bluegreen-template-front-end.yaml"
+HOSTNAME_SUFFIX="gl-oc-demo-ci-cd-prod.glpractices.com"
+
+oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-prod --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/prod-front-end.yaml 
+oc create -f temp/prod-front-end.yaml -n gl-oc-demo-ci-cd-prod
+
+DEP_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/pipeline-template-front-end.yaml"
+
+oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd > temp/prod-front-end.yaml 
+oc create -f temp/prod-front-end.yaml -n gl-oc-demo-ci-cd
 
 read -p "Press enter to continue"
