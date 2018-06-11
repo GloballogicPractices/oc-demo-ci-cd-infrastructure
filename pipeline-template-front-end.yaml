@@ -38,7 +38,7 @@ objects:
                         def svc = backends.find {it.weight == 100}
                         tag = svc.name == "green-front-end" ? "blue" : "green"
                         altTag = svc.name == "green-front-end" ? "green" : "blue"
-                        openshift.tag("${env.TEST_PROJECT}/test-front-end:latest", "${env.PROD_PROJECT}/front-end:prod-${tag}")
+                        openshift.tag("${env.TEST_PROJECT}/front-end:latest", "${env.PROD_PROJECT}/front-end:prod-${tag}")
                         openshift.selector("dc", "${tag}-front-end").rollout().status()
                       }
                     }
