@@ -49,6 +49,11 @@ oc rollout status dc nexus -n gl-oc-demo-ci-cd
 # Nexus Repos
 add_npm_proxy npm admin admin123 "http://nexus-gl-oc-demo-ci-cd.glpractices.com"
 
+# Deploy Jenkins
+oc new-app jenkins-ephemeral -l app=jenkins -p MEMORY_LIMIT=1Gi -n gl-oc-demo-ci-cd
+sleep 5
+oc set resources dc/jenkins --limits=cpu=1,memory=2Gi --requests=cpu=200m,memory=1Gi -n gl-oc-demo-ci-cd
+
 # Create Front-End Build(s)
 BLD_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/builds-template-front-end.yaml"
 GIT_URI="https://github.com/andriy-gnennyy-gl/oc-demo-ci-cd-front-end"
