@@ -46,14 +46,19 @@ objects:
           ports:
           - name: mongo
             containerPort: 27017
+          resources:
+            limits:
+              cpu: 300m
+              memory: 1000Mi
+            requests:
+              cpu: 100m
+              memory: 300Mi
           securityContext:
             capabilities:
               drop:
                 - all
               add:
-                - CHOWN
-                - SETGID
-                - SETUID
+                - all
             readOnlyRootFilesystem: true
           volumeMounts:
           - mountPath: /tmp
