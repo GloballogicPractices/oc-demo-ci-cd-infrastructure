@@ -5,37 +5,42 @@ labels:
 metadata:
   annotations:
     description: Socks Shop demo microservices application buildconfigs template
-    iconClass: icon-mongodb
-    tags: microservice,mongodb
-  name: cart-db-deployments
+    iconClass: icon-mysql
+    tags: microservice,mysql
+  name: catalogue-db-deployments
 objects:
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
-    name: ${NAME_PREFIX}-cart-db
+    name: ${NAME_PREFIX}-catalogue-db
     labels:
-      app: ${NAME_PREFIX}-cart-db
+      app: ${NAME_PREFIX}-catalogue-db
       comp-required: "true"
   spec:
     replicas: 1
     selector:
-      app: ${NAME_PREFIX}-cart-db
-      deploymentconfig: ${NAME_PREFIX}-cart-db
+      app: ${NAME_PREFIX}-catalogue-db
+      deploymentconfig: ${NAME_PREFIX}-catalogue-db
     strategy:
       resources: {}
       type: Recreate
     template:
       metadata:
         labels:
-          app: ${NAME_PREFIX}-cart-db
-          deploymentconfig: ${NAME_PREFIX}-cart-db
+          app: ${NAME_PREFIX}-catalogue-db
+          deploymentconfig: ${NAME_PREFIX}-catalogue-db
       spec:
         containers:
-        - name: carts-db
-          image: mongo
+        - name: catalogues-db
+          image: weaveworksdemos/catalogue-db:0.3.0
+          env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: fake_password
+          - name: MYSQL_DATABASE
+            value: socksdb
           ports:
-          - name: mongo
-            containerPort: 27017
+          - name: mysql
+            containerPort: 3306
           resources:
             limits:
               cpu: 300m
@@ -43,15 +48,6 @@ objects:
             requests:
               cpu: 100m
               memory: 300Mi
-          securityContext:
-            readOnlyRootFilesystem: true
-          volumeMounts:
-          - mountPath: /tmp
-            name: tmp-volume
-        volumes:
-          - name: tmp-volume
-            emptyDir:
-              medium: Memory
         nodeSelector:
           beta.kubernetes.io/os: linux
     triggers:
@@ -60,17 +56,17 @@ objects:
   kind: Service
   metadata:
     labels:
-      app: ${NAME_PREFIX}-cart-db
+      app: ${NAME_PREFIX}-catalogue-db
       comp-required: "true"
-    name: ${NAME_PREFIX}-cart-db
+    name: ${NAME_PREFIX}-catalogue-db
   spec:
     ports:
-    - name: 27017-tcp
-      port: 27017
+    - name: 3306-tcp
+      port: 3306
       protocol: TCP
-      targetPort: 27017
+      targetPort: 3306
     selector:
-      deploymentconfig: ${NAME_PREFIX}-cart-db
+      deploymentconfig: ${NAME_PREFIX}-catalogue-db
 parameters:
 - description: Name prefix for all names
   displayName: Name prefix for all names

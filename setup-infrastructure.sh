@@ -111,4 +111,16 @@ oc create -f temp/test-carts-db.yaml -n gl-oc-demo-ci-cd-test
 oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-prod --param=NAME_PREFIX=prod > temp/prod-carts-db.yaml 
 oc create -f temp/prod-carts-db.yaml -n gl-oc-demo-ci-cd-prod
 
+# Create Catalogue-DB Deployment(s)
+DEP_CDB_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-catalogue-db.yaml"
+
+oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=NAME_PREFIX=dev > temp/dev-catalogue-db.yaml 
+oc create -f temp/dev-catalogue-db.yaml -n gl-oc-demo-ci-cd-dev
+
+oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-test --param=NAME_PREFIX=test > temp/test-catalogue-db.yaml 
+oc create -f temp/test-catalogue-db.yaml -n gl-oc-demo-ci-cd-test
+
+oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-prod --param=NAME_PREFIX=prod > temp/prod-catalogue-db.yaml 
+oc create -f temp/prod-catalogue-db.yaml -n gl-oc-demo-ci-cd-prod
+
 read -p "Press enter to continue"
