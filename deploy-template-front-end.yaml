@@ -45,6 +45,10 @@ objects:
           - name: SESSION_REDIS
             value: "true"
           image: front-end
+          args:
+          - "/usr/local/bin/npm"
+            "start"
+            "--domain=${PROJECT}.svc"
           imagePullPolicy: Always
           name: front-end
           ports:
@@ -127,4 +131,6 @@ parameters:
 - description: Hostname suffix used for routes
   displayName: Hostname suffix used for routes
   name: HOSTNAME_SUFFIX
+  required: true
+- name: PROJECT
   required: true

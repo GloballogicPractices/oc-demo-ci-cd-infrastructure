@@ -82,8 +82,6 @@ for SVC in rabbitmq carts-db catalogue-db orders-db session-db user-db catalogue
 	  done
   done
 
-read -p "Press enter to continue"
-
 # Create Front-End Build(s)
 BLD_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/builds-template-front-end.yaml"
 GIT_URI="https://github.com/andriy-gnennyy-gl/oc-demo-ci-cd-front-end"
@@ -101,12 +99,12 @@ oc create -f temp/test-front-end.yaml -n gl-oc-demo-ci-cd-test
 DEP_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-front-end.yaml"
 HOSTNAME_SUFFIX="gl-oc-demo-ci-cd-dev.glpractices.com"
 
-oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/dev-front-end.yaml 
+oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX --param=PROJECT=gl-oc-demo-ci-cd-dev > temp/dev-front-end.yaml 
 oc create -f temp/dev-front-end.yaml -n gl-oc-demo-ci-cd-dev
 
 HOSTNAME_SUFFIX="gl-oc-demo-ci-cd-test.glpractices.com"
 
-oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-test --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/test-front-end.yaml 
+oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-test --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX --param=PROJECT=gl-oc-demo-ci-cd-test > temp/test-front-end.yaml 
 oc create -f temp/test-front-end.yaml -n gl-oc-demo-ci-cd-test
 
 DEP_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/bluegreen-template-front-end.yaml"
