@@ -47,8 +47,6 @@ objects:
               memory: 500Mi
           ports:
           - containerPort: 80
-          securityContext:
-            readOnlyRootFilesystem: true
           livenessProbe:
             httpGet:
               path: /health
