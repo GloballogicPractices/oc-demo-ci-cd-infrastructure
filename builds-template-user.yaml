@@ -42,6 +42,9 @@ objects:
       type: GitHub
     strategy:
       sourceStrategy:
+        - env:
+          - name: APP_URI
+            value: ${APP_URI}
         forcePull: false
         from:
           kind: ImageStreamTag
@@ -56,6 +59,9 @@ objects:
         cpu: "200m"
         memory: "1Gi"
 parameters:
+- name: APP_URI
+  required: true
+  value: github.com/andriy-gnennyy-gl/oc-demo-ci-cd-user
 - description: Git source URI for application
   displayName: Git source repository
   name: GIT_URI
