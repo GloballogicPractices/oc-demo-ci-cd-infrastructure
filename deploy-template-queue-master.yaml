@@ -71,6 +71,8 @@ objects:
     labels:
       app: queue-master
       comp-required: "true"
+    annotations:
+      prometheus.io/path: "/prometheus"
     name: queue-master
   spec:
     ports:
