@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Template
+labels:
+  demo: microservices-demo
+metadata:
+  annotations:
+    description: Socks Shop demo microservices application buildconfigs template
+    iconClass: icon-golang
+    tags: microservice,golang
+  name: user-deployments
+objects:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: user
+    labels:
+      app: user
+      comp-required: "true"
+  spec:
+    replicas: 1
+    selector:
+      app: user
+      deploymentconfig: user
+    strategy:
+      resources: {}
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: user
+          deploymentconfig: user
+      spec:
+        containers:
+        - name: user
+          image: weaveworksdemos/user:0.4.7
+          resources:
+          limits:
+            cpu: 300m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          ports:
+          - containerPort: 80
+          env:
+          - name: MONGO_HOST
+            value: user-db:27017
+          securityContext:
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 300
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 180
+          periodSeconds: 3
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+    triggers:
+    - type: ConfigChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: user
+      comp-required: "true"
+    name: user
+  spec:
+    ports:
+    - port: 80
+      targetPort: 80
+    selector:
+      name: user
+      deploymentconfig: user
