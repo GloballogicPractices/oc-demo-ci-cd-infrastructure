@@ -5,34 +5,39 @@ labels:
 metadata:
   annotations:
     description: Socks Shop demo microservices application buildconfigs template
-    iconClass: icon-golang
-    tags: microservice,golang
-  name: user-deployments
+    iconClass: icon-java
+    tags: microservice,java
+  name: shipping-deployments
 objects:
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
-    name: user
+    name: shipping
     labels:
-      app: user
+      app: shipping
       comp-required: "true"
   spec:
     replicas: 1
     selector:
-      app: user
-      deploymentconfig: user
+      app: shipping
+      deploymentconfig: shipping
     strategy:
       resources: {}
       type: Recreate
     template:
       metadata:
         labels:
-          app: user
-          deploymentconfig: user
+          app: shipping
+          deploymentconfig: shipping
       spec:
         containers:
-        - name: user
-          image: weaveworksdemos/user:0.4.7
+        - name: shipping
+          image: weaveworksdemos/shipping:0.4.8
+          env:
+          - name: ZIPKIN
+            value: zipkin.jaeger.svc.cluster.local
+          - name: JAVA_OPTS
+            value: -Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
           resources:
             limits:
               cpu: 300m
@@ -42,11 +47,11 @@ objects:
               memory: 100Mi
           ports:
           - containerPort: 80
-          env:
-          - name: MONGO_HOST
-            value: user-db:27017
           securityContext:
             readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
         livenessProbe:
           httpGet:
             path: /health
@@ -59,6 +64,10 @@ objects:
             port: 80
           initialDelaySeconds: 180
           periodSeconds: 3
+      volumes:
+        - name: tmp-volume
+          emptyDir:
+            medium: Memory
       nodeSelector:
         beta.kubernetes.io/os: linux
     triggers:
@@ -67,16 +76,16 @@ objects:
   kind: Service
   metadata:
     labels:
-      app: user
+      app: shipping
       comp-required: "true"
-    name: user
+    name: shipping
   spec:
     ports:
     - port: 80
       targetPort: 80
     selector:
-      name: user
-      deploymentconfig: user
+      name: shipping
+      deploymentconfig: shipping
 parameters:
 - description: Hostname suffix used for routes
   displayName: Hostname suffix used for routes
