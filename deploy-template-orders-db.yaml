@@ -72,3 +72,8 @@ objects:
     selector:
       name: orders-db
       deploymentconfig: orders-db
+parameters:
+- description: Hostname suffix used for routes
+  displayName: Hostname suffix used for routes
+  name: HOSTNAME_SUFFIX
+  required: false

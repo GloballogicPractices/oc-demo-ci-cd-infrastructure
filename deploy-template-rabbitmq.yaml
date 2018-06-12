@@ -77,3 +77,8 @@ objects:
     selector:
       name: rabbitmq
       deploymentconfig: rabbitmq
+parameters:
+- description: Hostname suffix used for routes
+  displayName: Hostname suffix used for routes
+  name: HOSTNAME_SUFFIX
+  required: false

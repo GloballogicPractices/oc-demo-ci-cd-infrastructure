@@ -65,3 +65,8 @@ objects:
     selector:
       name: session-db
       deploymentconfig: session-db
+parameters:
+- description: Hostname suffix used for routes
+  displayName: Hostname suffix used for routes
+  name: HOSTNAME_SUFFIX
+  required: false

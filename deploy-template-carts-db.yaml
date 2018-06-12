@@ -72,3 +72,8 @@ objects:
     selector:
       name: carts-db
       deploymentconfig: carts-db
+parameters:
+- description: Hostname suffix used for routes
+  displayName: Hostname suffix used for routes
+  name: HOSTNAME_SUFFIX
+  required: false

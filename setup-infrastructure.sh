@@ -65,77 +65,24 @@ oc rollout status dc jenkins -n gl-oc-demo-ci-cd
 oc delete route jenkins -n gl-oc-demo-ci-cd
 oc expose service jenkins -n gl-oc-demo-ci-cd
 
-# Create Carts-DB Deployment(s)
-DEP_CDB_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-carts-db.yaml"
+# Create Service Deployment(s)
+for SVC in rabbitmq carts-db catalogue-db orders-db session-db user-db catalogue carts orders payment queue-master shipping user
+  do
+    DEP_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-$SVC.yaml"
+    echo "Processing template: $DEP_TEMPLATE"
 
-oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-dev > temp/dev-carts-db.yaml 
-oc create -f temp/dev-carts-db.yaml -n gl-oc-demo-ci-cd-dev
+	for PRJ in dev test prod
+  	  do
+  	  	NAMESPACE="gl-oc-demo-ci-cd-$PRJ"
+	    HOSTNAME_SUFFIX="$NAMESPACE.glpractices.com"
 
-oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-test > temp/test-carts-db.yaml 
-oc create -f temp/test-carts-db.yaml -n gl-oc-demo-ci-cd-test
+		oc process -f $DEP_TEMPLATE -n $NAMESPACE --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/$PRJ-$SVC.yaml 
+		oc create -f temp/$PRJ-$SVC.yaml -n $NAMESPACE
 
-oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-prod > temp/prod-carts-db.yaml 
-oc create -f temp/prod-carts-db.yaml -n gl-oc-demo-ci-cd-prod
+	  done
+  done
 
-# Create Catalogue-DB Deployment(s)
-DEP_CDB_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-catalogue-db.yaml"
-
-oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-dev > temp/dev-catalogue-db.yaml 
-oc create -f temp/dev-catalogue-db.yaml -n gl-oc-demo-ci-cd-dev
-
-oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-test > temp/test-catalogue-db.yaml 
-oc create -f temp/test-catalogue-db.yaml -n gl-oc-demo-ci-cd-test
-
-oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-prod > temp/prod-catalogue-db.yaml 
-oc create -f temp/prod-catalogue-db.yaml -n gl-oc-demo-ci-cd-prod
-
-# Create Orders-DB Deployment(s)
-DEP_CDB_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-orders-db.yaml"
-
-oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-dev > temp/dev-orders-db.yaml 
-oc create -f temp/dev-orders-db.yaml -n gl-oc-demo-ci-cd-dev
-
-oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-test > temp/test-orders-db.yaml 
-oc create -f temp/test-orders-db.yaml -n gl-oc-demo-ci-cd-test
-
-oc process -f $DEP_CDB_TEMPLATE -n gl-oc-demo-ci-cd-prod > temp/prod-orders-db.yaml 
-oc create -f temp/prod-orders-db.yaml -n gl-oc-demo-ci-cd-prod
-
-# Create RabbitMQ Deployment(s)
-DEP_MQ_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-rabbitmq.yaml"
-
-oc process -f $DEP_MQ_TEMPLATE -n gl-oc-demo-ci-cd-dev > temp/dev-rabbitmq.yaml 
-oc create -f temp/dev-rabbitmq.yaml -n gl-oc-demo-ci-cd-dev
-
-oc process -f $DEP_MQ_TEMPLATE -n gl-oc-demo-ci-cd-test > temp/test-rabbitmq.yaml 
-oc create -f temp/test-rabbitmq.yaml -n gl-oc-demo-ci-cd-test
-
-oc process -f $DEP_MQ_TEMPLATE -n gl-oc-demo-ci-cd-prod > temp/prod-rabbitmq.yaml 
-oc create -f temp/prod-rabbitmq.yaml -n gl-oc-demo-ci-cd-prod
-
-# Create Session-DB Deployment(s)
-DEP_SDB_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-session-db.yaml"
-
-oc process -f $DEP_SDB_TEMPLATE -n gl-oc-demo-ci-cd-dev > temp/dev-session-db.yaml 
-oc create -f temp/dev-session-db.yaml -n gl-oc-demo-ci-cd-dev
-
-oc process -f $DEP_SDB_TEMPLATE -n gl-oc-demo-ci-cd-test > temp/test-session-db.yaml 
-oc create -f temp/test-session-db.yaml -n gl-oc-demo-ci-cd-test
-
-oc process -f $DEP_SDB_TEMPLATE -n gl-oc-demo-ci-cd-prod > temp/prod-session-db.yaml 
-oc create -f temp/prod-session-db.yaml -n gl-oc-demo-ci-cd-prod
-
-# Create User-DB Deployment(s)
-DEP_SDB_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-user-db.yaml"
-
-oc process -f $DEP_SDB_TEMPLATE -n gl-oc-demo-ci-cd-dev > temp/dev-user-db.yaml 
-oc create -f temp/dev-user-db.yaml -n gl-oc-demo-ci-cd-dev
-
-oc process -f $DEP_SDB_TEMPLATE -n gl-oc-demo-ci-cd-test > temp/test-user-db.yaml 
-oc create -f temp/test-user-db.yaml -n gl-oc-demo-ci-cd-test
-
-oc process -f $DEP_SDB_TEMPLATE -n gl-oc-demo-ci-cd-prod > temp/prod-user-db.yaml 
-oc create -f temp/prod-user-db.yaml -n gl-oc-demo-ci-cd-prod
+read -p "Press enter to continue"
 
 # Create Front-End Build(s)
 BLD_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/builds-template-front-end.yaml"

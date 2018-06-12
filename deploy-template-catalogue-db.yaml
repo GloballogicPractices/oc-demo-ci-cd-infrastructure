@@ -68,3 +68,8 @@ objects:
     selector:
       name: catalogue-db
       deploymentconfig: catalogue-db
+parameters:
+- description: Hostname suffix used for routes
+  displayName: Hostname suffix used for routes
+  name: HOSTNAME_SUFFIX
+  required: false
