@@ -65,12 +65,9 @@ objects:
     name: carts-db
   spec:
     ports:
-    - name: 27017-tcp
-      port: 27017
-      protocol: TCP
+    - port: 27017
       targetPort: 27017
     selector:
-      name: carts-db
       deploymentconfig: carts-db
 parameters:
 - description: Hostname suffix used for routes

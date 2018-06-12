@@ -49,27 +49,27 @@ objects:
           - containerPort: 80
           securityContext:
             readOnlyRootFilesystem: true
-        volumeMounts:
-        - mountPath: /tmp
-          name: tmp-volume
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 300
-          periodSeconds: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 180
-          periodSeconds: 3
-      volumes:
-        - name: tmp-volume
-          emptyDir:
-            medium: Memory
-      nodeSelector:
-        beta.kubernetes.io/os: linux
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp-volume
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 300
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 180
+            periodSeconds: 3
+        volumes:
+          - name: tmp-volume
+            emptyDir:
+              medium: Memory
+        nodeSelector:
+          beta.kubernetes.io/os: linux
     triggers:
     - type: ConfigChange
 - apiVersion: v1
@@ -84,7 +84,6 @@ objects:
     - port: 80
       targetPort: 80
     selector:
-      name: orders
       deploymentconfig: orders
 parameters:
 - description: Hostname suffix used for routes

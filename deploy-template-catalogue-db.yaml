@@ -61,12 +61,9 @@ objects:
     name: catalogue-db
   spec:
     ports:
-    - name: 3306-tcp
-      port: 3306
-      protocol: TCP
+    - port: 3306
       targetPort: 3306
     selector:
-      name: catalogue-db
       deploymentconfig: catalogue-db
 parameters:
 - description: Hostname suffix used for routes

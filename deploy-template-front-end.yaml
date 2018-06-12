@@ -44,11 +44,9 @@ objects:
         - env:
           - name: SESSION_REDIS
             value: "true"
+          - name: DOMAIN
+            value: "${PROJECT}.svc"
           image: front-end
-          args:
-          - "/usr/local/bin/npm"
-            "start"
-            "--domain=${PROJECT}.svc"
           imagePullPolicy: Always
           name: front-end
           ports:

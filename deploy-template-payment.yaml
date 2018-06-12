@@ -44,18 +44,18 @@ objects:
           - containerPort: 80
           securityContext:
             readOnlyRootFilesystem: true
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 300
-          periodSeconds: 3
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 180
-          periodSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 300
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 180
+            periodSeconds: 3
       nodeSelector:
         beta.kubernetes.io/os: linux
     triggers:
@@ -72,7 +72,6 @@ objects:
     - port: 80
       targetPort: 80
     selector:
-      name: payment
       deploymentconfig: payment
 parameters:
 - description: Hostname suffix used for routes

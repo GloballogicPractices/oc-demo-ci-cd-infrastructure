@@ -63,7 +63,6 @@ objects:
     - port: 6379
       targetPort: 6379
     selector:
-      name: session-db
       deploymentconfig: session-db
 parameters:
 - description: Hostname suffix used for routes

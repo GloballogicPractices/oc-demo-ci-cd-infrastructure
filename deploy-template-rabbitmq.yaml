@@ -75,7 +75,6 @@ objects:
       targetPort: exporter
       protocol: TCP
     selector:
-      name: rabbitmq
       deploymentconfig: rabbitmq
 parameters:
 - description: Hostname suffix used for routes

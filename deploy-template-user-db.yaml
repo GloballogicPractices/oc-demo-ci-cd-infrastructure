@@ -65,12 +65,9 @@ objects:
     name: user-db
   spec:
     ports:
-    - name: 27017-tcp
-      port: 27017
-      protocol: TCP
+    - port: 27017
       targetPort: 27017
     selector:
-      name: user-db
       deploymentconfig: user-db
 parameters:
 - description: Hostname suffix used for routes
