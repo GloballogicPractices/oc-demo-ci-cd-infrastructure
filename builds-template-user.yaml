@@ -42,9 +42,9 @@ objects:
       type: GitHub
     strategy:
       sourceStrategy:
-        - env:
-          - name: APP_URI
-            value: ${APP_URI}
+        env:
+        - name: APP_URI
+          value: ${APP_URI}
         forcePull: false
         from:
           kind: ImageStreamTag
