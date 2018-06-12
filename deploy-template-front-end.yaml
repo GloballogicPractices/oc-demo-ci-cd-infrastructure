@@ -72,15 +72,11 @@ objects:
               cpu: 100m
               memory: 300Mi
           terminationMessagePath: /dev/termination-log
-        dnsPolicy: ClusterFirst
-        restartPolicy: Always
-        securityContext:
-          runAsNonRoot: true
-          capabilities:
-            drop:
-              - all
-          readOnlyRootFilesystem: true
-        terminationGracePeriodSeconds: 30
+          dnsPolicy: ClusterFirst
+          restartPolicy: Always
+          securityContext:
+            readOnlyRootFilesystem: true
+          terminationGracePeriodSeconds: 30
       nodeSelector:
         beta.kubernetes.io/os: linux
     triggers:
@@ -129,6 +125,4 @@ parameters:
 - description: Hostname suffix used for routes
   displayName: Hostname suffix used for routes
   name: HOSTNAME_SUFFIX
-  required: true
-- name: PROJECT
   required: true
