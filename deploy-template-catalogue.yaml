@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: Template
+labels:
+  demo: microservices-demo
+metadata:
+  annotations:
+    description: Socks Shop demo microservices application buildconfigs template
+    iconClass: icon-golang
+    tags: microservice,golang
+  name: catalogue-deployments
+objects:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: catalogue
+    labels:
+      app: catalogue
+      comp-required: "true"
+  spec:
+    replicas: 1
+    selector:
+      app: catalogue
+      deploymentconfig: catalogue
+    strategy:
+      resources: {}
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: catalogue
+          deploymentconfig: catalogue
+      spec:
+        containers:
+        - name: catalogue
+          image: weaveworksdemos/catalogue:0.3.5
+          args:
+          - -port=80
+          resources:
+            limits:
+              cpu: 100m
+              memory: 100Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          ports:
+          - containerPort: 80
+          env:
+          - name: MONGO_HOST
+            value: catalogue-db:27017
+          securityContext:
+            readOnlyRootFilesystem: true
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 300
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 180
+          periodSeconds: 3
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+    triggers:
+    - type: ConfigChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: catalogue
+      comp-required: "true"
+    name: catalogue
+  spec:
+    ports:
+    - port: 80
+      targetPort: 80
+    selector:
+      name: catalogue
+      deploymentconfig: catalogue
+parameters:
+- description: Hostname suffix used for routes
+  displayName: Hostname suffix used for routes
+  name: HOSTNAME_SUFFIX
+  required: false
