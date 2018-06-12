@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: Template
+labels:
+  demo: microservices-demo
+metadata:
+  annotations:
+    description: Socks Shop demo microservices application buildconfigs template
+    iconClass: icon-java
+    tags: microservice,java
+  name: orders-deployments
+objects:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: orders
+    labels:
+      app: orders
+      comp-required: "true"
+  spec:
+    replicas: 1
+    selector:
+      app: orders
+      deploymentconfig: orders
+    strategy:
+      resources: {}
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: orders
+          deploymentconfig: orders
+      spec:
+        containers:
+        - name: orders
+          image: weaveworksdemos/orders:0.4.7
+          env:
+          - name: ZIPKIN
+            value: zipkin.jaeger.svc.cluster.local
+          - name: JAVA_OPTS
+            value: -Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests:
+              cpu: 200m
+              memory: 500Mi
+          ports:
+          - containerPort: 80
+          securityContext:
+            readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 300
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 180
+          periodSeconds: 3
+      volumes:
+        - name: tmp-volume
+          emptyDir:
+            medium: Memory
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+    triggers:
+    - type: ConfigChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: orders
+      comp-required: "true"
+    name: orders
+  spec:
+    ports:
+    - port: 80
+      targetPort: 80
+    selector:
+      name: orders
+      deploymentconfig: orders
+parameters:
+- description: Hostname suffix used for routes
+  displayName: Hostname suffix used for routes
+  name: HOSTNAME_SUFFIX
+  required: false
