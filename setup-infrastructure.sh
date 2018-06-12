@@ -22,6 +22,8 @@ oc new-project gl-oc-demo-ci-cd-dev --display-name="GL OC Demo CI\CD Dev"
 oc new-project gl-oc-demo-ci-cd-test --display-name="GL OC Demo CI\CD Test"
 oc new-project gl-oc-demo-ci-cd-prod --display-name="GL OC Demo CI\CD Prod"
 
+oc import-image tnozicka/s2i-centos7-golang:latest --confirm=true -n gl-oc-demo-ci-cd
+
 oc adm policy add-scc-to-user anyuid -z default -n gl-oc-demo-ci-cd-dev
 oc adm policy add-scc-to-user anyuid -z default -n gl-oc-demo-ci-cd-test
 oc adm policy add-scc-to-user anyuid -z default -n gl-oc-demo-ci-cd-prod

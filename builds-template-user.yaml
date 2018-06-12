@@ -46,7 +46,7 @@ objects:
         from:
           kind: ImageStreamTag
           name: s2i-centos7-golang:latest
-          namespace: tnozicka
+          namespace: gl-oc-demo-ci-cd
       type: Source
     resources:
       limits:
