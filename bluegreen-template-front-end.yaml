@@ -115,22 +115,6 @@ objects:
     selector:
       deploymentconfig: blue-front-end
 - apiVersion: v1
-  kind: Service
-  metadata:
-    labels:
-      app: front-end
-      variant: green
-      comp-required: "true"
-    name: green-front-end
-  spec:
-    ports:
-    - name: 8079-tcp
-      port: 8079
-      protocol: TCP
-      targetPort: 8079
-    selector:
-      deploymentconfig: green-front-end
-- apiVersion: v1
   kind: DeploymentConfig
   metadata:
     name: green-front-end
@@ -241,15 +225,20 @@ objects:
 - apiVersion: v1
   kind: Route
   metadata:
-    name: blue-front-end
+    name: staging-front-end
     labels:
       app: front-end
+      variant: blue
       comp-required: "true"
   spec:
-    host: blue-front-end-${HOSTNAME_SUFFIX}
+    host: staging-front-end-${HOSTNAME_SUFFIX}
+    alternateBackends:
+    - name: green-front-end
+      weight: "100"
     to:
       kind: Service
       name: blue-front-end
+      weight: "0"
 parameters:
 - description: CoolStore application image version to be deployed (imagestreams should exist)
   displayName: CoolStore blue (existing) image version

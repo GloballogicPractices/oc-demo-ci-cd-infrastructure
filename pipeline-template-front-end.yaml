@@ -58,6 +58,7 @@ objects:
                     openshift.withCluster() {
                       openshift.withProject(env.PROD_PROJECT) {
                         openshift.set("route-backends", "front-end", "--adjust", "${tag}-front-end=100%")
+                        openshift.set("route-backends", "staging-front-end", "--adjust", "${altTag}-front-end=100%")
                       }
                     }
                   }
