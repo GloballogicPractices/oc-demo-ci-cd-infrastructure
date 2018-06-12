@@ -115,6 +115,22 @@ objects:
     selector:
       deploymentconfig: blue-front-end
 - apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: front-end
+      variant: green
+      comp-required: "true"
+    name: green-front-end
+  spec:
+    ports:
+    - name: 8079-tcp
+      port: 8079
+      protocol: TCP
+      targetPort: 8079
+    selector:
+      deploymentconfig: green-front-end
+- apiVersion: v1
   kind: DeploymentConfig
   metadata:
     name: green-front-end
