@@ -61,7 +61,7 @@ objects:
 parameters:
 - name: APP_URI
   required: true
-  value: github.com/andriy-gnennyy-gl/oc-demo-ci-cd-user
+  value: github.com/microservices-demo/user
 - description: Git source URI for application
   displayName: Git source repository
   name: GIT_URI
