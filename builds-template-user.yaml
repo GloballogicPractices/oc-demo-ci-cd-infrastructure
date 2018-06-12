@@ -45,8 +45,8 @@ objects:
         forcePull: false
         from:
           kind: ImageStreamTag
-          name: s2i-centos-golang:latest
-          namespace: jcajka
+          name: s2i-centos7-golang:latest
+          namespace: tnozicka
       type: Source
     resources:
       limits:
