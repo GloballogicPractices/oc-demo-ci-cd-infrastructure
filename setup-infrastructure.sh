@@ -78,7 +78,7 @@ for SVC in rabbitmq carts-db catalogue-db orders-db session-db user-db catalogue
 
 		oc process -f $DEP_TEMPLATE -n $NAMESPACE --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/$PRJ-$SVC.yaml 
 		oc create -f temp/$PRJ-$SVC.yaml -n $NAMESPACE
-
+		oc rollout status dc $SVC -n $NAMESPACE
 	  done
   done
 
