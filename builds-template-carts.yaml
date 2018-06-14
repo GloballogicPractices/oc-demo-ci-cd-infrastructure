@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: Template
+labels:
+  demo: microservices-demo
+metadata:
+  annotations:
+    description: Socks Shop demo microservices application buildconfigs template
+    iconClass: icon-go
+    tags: microservice,go
+  name: carts-build
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: carts
+    labels:
+      comp-required: "true"
+      app: carts
+  spec:
+    tags:
+    - name: latest
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    name: carts
+    labels:
+      comp-required: "true"
+      app: carts
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: carts:latest
+    source:
+      git:
+        ref: ${GIT_REF}
+        uri: ${GIT_URI}
+      type: Git
+    triggers:
+    - github:
+        secret: c2VjcmV1dmFsdWUx
+      type: GitHub
+    strategy:
+      sourceStrategy:
+        env:
+        - name: MAVEN_MIRROR_URL
+          value: ${MAVEN_MIRROR_URL}
+        forcePull: false
+        from:
+          kind: ImageStreamTag
+          name: redhat-openjdk18-openshift:1.1
+          namespace: openshift
+      type: Source
+    resources:
+      limits:
+        cpu: 500m
+        memory: "2Gi"
+      requests:
+        cpu: "200m"
+        memory: "1Gi"
+parameters:
+- description: Maven mirror url. If nexus is deployed locally, use nexus url (e.g. http://nexus.ci:8081/content/groups/public/)
+  displayName: Maven mirror url
+  name: MAVEN_MIRROR_URL
+  value: http://nexus.gl-oc-demo-ci-cd.svc:8081/repository/maven-all-public/
+- description: Git source URI for application
+  displayName: Git source repository
+  name: GIT_URI
+  required: true
+  value: https://github.com/andriy-gnennyy-gl/oc-demo-ci-cd-carts
+- description: Git branch/tag reference
+  displayName: Git branch/tag reference
+  name: GIT_REF
+  required: true
+  value: dev
