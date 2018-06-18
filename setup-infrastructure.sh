@@ -45,7 +45,7 @@ oc adm pod-network join-projects --to=gl-oc-demo-ci-cd gl-oc-demo-ci-cd-dev gl-o
 mkdir temp
 
 # Deploy Nexus
-NEXUS_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/nexus3-template.yaml"
+NEXUS_TEMPLATE="https://raw.githubusercontent.com/GloballogicPractices/oc-demo-ci-cd-infrastructure/master/nexus3-template.yaml"
 
 oc process -f $NEXUS_TEMPLATE -n gl-oc-demo-ci-cd > temp/nexus3.yaml 
 oc create -f temp/nexus3.yaml -n gl-oc-demo-ci-cd
@@ -68,7 +68,7 @@ oc expose service jenkins -n gl-oc-demo-ci-cd
 # Create Service Deployment(s)
 for SVC in rabbitmq carts-db catalogue-db orders-db session-db user-db catalogue carts orders payment queue-master shipping user
   do
-    DEP_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-$SVC.yaml"
+    DEP_TEMPLATE="https://raw.githubusercontent.com/GloballogicPractices/oc-demo-ci-cd-infrastructure/master/deploy-template-$SVC.yaml"
     echo "Processing template: $DEP_TEMPLATE"
 
 	for PRJ in dev test prod
@@ -83,8 +83,8 @@ for SVC in rabbitmq carts-db catalogue-db orders-db session-db user-db catalogue
   done
 
 # Create Front-End Build(s)
-BLD_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/builds-template-front-end.yaml"
-GIT_URI="https://github.com/andriy-gnennyy-gl/oc-demo-ci-cd-front-end"
+BLD_FT_TEMPLATE="https://raw.githubusercontent.com/GloballogicPractices/oc-demo-ci-cd-infrastructure/master/builds-template-front-end.yaml"
+GIT_URI="https://github.com/GloballogicPractices/oc-demo-ci-cd-front-end"
 GIT_REF="dev"
 
 oc process -f $BLD_FT_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=GIT_URI=$GIT_URI --param=GIT_REF=$GIT_REF > temp/dev-front-end.yaml 
@@ -96,7 +96,7 @@ oc process -f $BLD_FT_TEMPLATE -n gl-oc-demo-ci-cd-test --param=GIT_URI=$GIT_URI
 oc create -f temp/test-front-end.yaml -n gl-oc-demo-ci-cd-test
 
 # Create Front-End Deployment(s)
-DEP_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/deploy-template-front-end.yaml"
+DEP_FT_TEMPLATE="https://raw.githubusercontent.com/GloballogicPractices/oc-demo-ci-cd-infrastructure/master/deploy-template-front-end.yaml"
 HOSTNAME_SUFFIX="gl-oc-demo-ci-cd-dev.glpractices.com"
 
 oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-dev --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/dev-front-end.yaml 
@@ -107,13 +107,13 @@ HOSTNAME_SUFFIX="gl-oc-demo-ci-cd-test.glpractices.com"
 oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-test --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/test-front-end.yaml 
 oc create -f temp/test-front-end.yaml -n gl-oc-demo-ci-cd-test
 
-DEP_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/bluegreen-template-front-end.yaml"
+DEP_FT_TEMPLATE="https://raw.githubusercontent.com/GloballogicPractices/oc-demo-ci-cd-infrastructure/master/bluegreen-template-front-end.yaml"
 HOSTNAME_SUFFIX="gl-oc-demo-ci-cd-prod.glpractices.com"
 
 oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd-prod --param=HOSTNAME_SUFFIX=$HOSTNAME_SUFFIX > temp/prod-front-end.yaml 
 oc create -f temp/prod-front-end.yaml -n gl-oc-demo-ci-cd-prod
 
-DEP_FT_TEMPLATE="https://raw.githubusercontent.com/andriy-gnennyy-gl/oc-demo-ci-cd-infrastructure/master/pipeline-template-front-end.yaml"
+DEP_FT_TEMPLATE="https://raw.githubusercontent.com/GloballogicPractices/oc-demo-ci-cd-infrastructure/master/pipeline-template-front-end.yaml"
 
 oc process -f $DEP_FT_TEMPLATE -n gl-oc-demo-ci-cd > temp/prod-front-end.yaml 
 oc create -f temp/prod-front-end.yaml -n gl-oc-demo-ci-cd

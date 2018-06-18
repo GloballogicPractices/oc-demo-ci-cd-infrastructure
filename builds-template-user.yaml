@@ -61,12 +61,12 @@ objects:
 parameters:
 - name: APP_URI
   required: true
-  value: github.com/andriy-gnennyy-gl/oc-demo-ci-cd-user
+  value: github.com/GloballogicPractices/oc-demo-ci-cd-user
 - description: Git source URI for application
   displayName: Git source repository
   name: GIT_URI
   required: true
-  value: https://github.com/andriy-gnennyy-gl/oc-demo-ci-cd-user
+  value: https://github.com/GloballogicPractices/oc-demo-ci-cd-user
 - description: Git branch/tag reference
   displayName: Git branch/tag reference
   name: GIT_REF

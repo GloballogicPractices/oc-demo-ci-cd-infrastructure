@@ -67,7 +67,7 @@ parameters:
   displayName: Git source repository
   name: GIT_URI
   required: true
-  value: https://github.com/andriy-gnennyy-gl/oc-demo-ci-cd-carts
+  value: https://github.com/GloballogicPractices/oc-demo-ci-cd-carts
 - description: Git branch/tag reference
   displayName: Git branch/tag reference
   name: GIT_REF
